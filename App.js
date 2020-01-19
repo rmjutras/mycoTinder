@@ -3,44 +3,54 @@
 import React, {Component} from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
+import QuestionTree from './QuestionTree';
  
-class SomeComponent extends Component {
+class App extends Component {
  
   constructor(props) {
     super(props);
     this.state = {
-      myText: 'I\'m ready to get swiped!',
+      text: QuestionTree.text,
       gestureName: 'none',
-      backgroundColor: '#fff'
+      backgroundColor: '#fff',
+      currentNode: QuestionTree
     };
   }
  
   onSwipeUp(gestureState) {
-    this.setState({myText: 'You swiped up!'});
+    this.setState({text: 'You swiped up!'});
   }
  
   onSwipeDown(gestureState) {
-    this.setState({myText: 'You swiped down!'});
+    this.setState({text: 'You swiped down!'});
   }
  
   onSwipeLeft(gestureState) {
-    this.setState({myText: 'You swiped left!'});
+    let nextNode = this.state.currentNode.ifno;
+    this.setState({
+      currentNode: nextNode,
+      text: nextNode.text
+    });
   }
  
   onSwipeRight(gestureState) {
-    this.setState({myText: 'You swiped right!'});
+    let nextNode = this.state.currentNode.ifyes;
+    this.setState({
+      currentNode: nextNode,
+      text: nextNode.text
+    });
   }
  
   onSwipe(gestureName, gestureState) {
     const {SWIPE_UP, SWIPE_DOWN, SWIPE_LEFT, SWIPE_RIGHT} = swipeDirections;
     this.setState({gestureName: gestureName});
     switch (gestureName) {
-      case SWIPE_UP:
-        this.setState({backgroundColor: 'red'});
-        break;
-      case SWIPE_DOWN:
-        this.setState({backgroundColor: 'green'});
-        break;
+      // case SWIPE_UP:
+      //   this.setState({backgroundColor: 'red'});
+      //   break;
+      // case SWIPE_DOWN:
+      //   this.setState({backgroundColor: 'green'});
+      //   break;
       case SWIPE_LEFT:
         this.setState({backgroundColor: 'blue'});
         break;
@@ -59,22 +69,22 @@ class SomeComponent extends Component {
  
     return (
       <GestureRecognizer
-        onSwipe={this.onSwipe}
-        onSwipeUp={this.onSwipeUp}
-        onSwipeDown={this.onSwipeDown}
-        onSwipeLeft={this.onSwipeLeft}
-        onSwipeRight={this.onSwipeRight}
+        onSwipe={this.onSwipe.bind(this)}
+        onSwipeUp={this.onSwipeUp.bind(this)}
+        onSwipeDown={this.onSwipeDown.bind(this)}
+        onSwipeLeft={this.onSwipeLeft.bind(this)}
+        onSwipeRight={this.onSwipeRight.bind(this)}
         config={config}
         style={{
           flex: 1,
           backgroundColor: this.state.backgroundColor
         }}
         >
-        <Text>{this.state.myText}</Text>
+        <Text>{this.state.text}</Text>
         <Text>onSwipe callback received gesture: {this.state.gestureName}</Text>
       </GestureRecognizer>
     );
   }
 }
  
-export default SomeComponent;
+export default App;
